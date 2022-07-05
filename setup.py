@@ -1,5 +1,5 @@
 """
-    Setup file for libs.
+    Setup file for python_libs.
     Use setup.cfg to configure your project.
 
     This file was generated with PyScaffold 4.2.3.

@@ -34,7 +34,7 @@ except ImportError:
     from sphinx import apidoc
 
 output_dir = os.path.join(__location__, "api")
-module_dir = os.path.join(__location__, "../src/libs")
+module_dir = os.path.join(__location__, "../src/python_libs")
 try:
     shutil.rmtree(output_dir)
 except FileNotFoundError:
@@ -77,8 +77,26 @@ extensions = [
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
+
+# Enable markdown
+extensions.append("myst_parser")
+
+# Configure MyST-Parser
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "html_image",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "substitution",
+    "tasklist",
+]
+
 # The suffix of source filenames.
-source_suffix = ".rst"
+source_suffix = [".rst", ".md"]
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
@@ -87,7 +105,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "libs"
+project = "python_libs"
 copyright = "2022, Arnold Jiménez"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -99,7 +117,7 @@ copyright = "2022, Arnold Jiménez"
 # If you don’t need the separation provided between version and release,
 # just set them both to the same value.
 try:
-    from libs import __version__ as version
+    from python_libs import __version__ as version
 except ImportError:
     version = ""
 
@@ -229,7 +247,7 @@ html_static_path = ["_static"]
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "libs-doc"
+htmlhelp_basename = "python_libs-doc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -246,7 +264,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "user_guide.tex", "libs Documentation", "Arnold Jiménez", "manual")
+    ("index", "user_guide.tex", "python_libs Documentation", "Arnold Jiménez", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
