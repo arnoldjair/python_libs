@@ -24,7 +24,7 @@ import argparse
 import logging
 import sys
 
-from libs import __version__
+from python_libs import __version__
 
 __author__ = "Arnold Jiménez"
 __copyright__ = "Arnold Jiménez"

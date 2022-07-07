@@ -119,3 +119,7 @@ This project has been set up using [PyScaffold] 4.2.3 and the [dsproject extensi
 [Google style]: http://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings
 [PyScaffold]: https://pyscaffold.org/
 [dsproject extension]: https://github.com/pyscaffold/pyscaffoldext-dsproject
+
+## TODO
+
+pip install certifi --ignore-installed (https://chowdera.com/2022/161/202206101349136429.html)

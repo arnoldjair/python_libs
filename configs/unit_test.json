@@ -1,0 +1,13 @@
+{
+    "rose": {
+        "subjects": [
+            "2",
+            "12"
+        ]
+    },
+    "replay_mobile": {
+        "datasets": [
+            "devel"
+        ]
+    }
+}

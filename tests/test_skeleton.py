@@ -1,6 +1,6 @@
 import pytest
 
-from libs.skeleton import fib, main
+from python_libs.skeleton import fib, main
 
 __author__ = "Arnold Jiménez"
 __copyright__ = "Arnold Jiménez"
