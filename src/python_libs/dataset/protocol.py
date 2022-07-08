@@ -32,7 +32,6 @@ class Protocol:  # pylint: disable=too-few-public-methods
             json_file = json.load(file)
 
             rose_path = os.environ.get("ROSE_DATASET")
-            print(rose_path)
             subjects = json_file["rose"]["subjects"]
             frames = RoseParser.get_db_records_as_frame(subjects)
             records = list(

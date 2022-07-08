@@ -34,8 +34,13 @@ class Record:
         self.landmarks = self.get_landmarks(time=time, every_frame=every_frame)
         self.flow = self.get_flow()
         rep = self.landmarks
-        # rep = np.concatenate((self.landmarks, np.array(
-        #    self.flow).reshape((len(self.flow), -1), order='F')), axis=1)
+        rep = np.concatenate(
+            (
+                self.landmarks,
+                np.array(self.flow).reshape((len(self.flow), -1), order="F"),
+            ),
+            axis=1,
+        )
 
         if np.shape(rep)[0] < samples:
             pad_length = samples - np.shape(rep)[0]
