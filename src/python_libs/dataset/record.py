@@ -21,6 +21,9 @@ class Record:
         self.landmarks = None
         self.flow = None
 
+    def __repr__(self):
+        return f"{self.video_path}-{self.label}"
+
     def load(self, time: int = 0, every_frame: int = 1, samples=30) -> NDArray:
         """Load
 
