@@ -89,7 +89,7 @@ def get_video_info(path):
 
 
 def get_video_info_file(path):
-    with open(f"{path}.info", "r") as f:
+    with open(path, "r") as f:
         video_info = f.read().splitlines()[0].split(sep=" ")
         return [float(item) for item in video_info]
 

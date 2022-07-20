@@ -5,7 +5,6 @@ import json
 import os
 from typing import List
 
-from dotenv import load_dotenv
 from sklearn.model_selection import train_test_split
 
 from .record import Record
@@ -16,7 +15,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
     """Class for handling protocol"""
 
     def __init__(self) -> None:
-        load_dotenv()
+        pass
 
     @staticmethod
     def get_protocol(json_path: str) -> List[Record]:

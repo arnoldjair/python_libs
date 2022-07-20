@@ -1,40 +1,29 @@
 import os
 
-from dotenv import load_dotenv
-
 from python_libs.dataset.record import Record
 
 
 class TestRecord:
     def test_load_record(self):
-        video_path = os.path.join(
-            os.environ.get("TEST_DIR"), "dataset", "rose", "G_NT_5s_wg_E_10_1.mp4"
-        )
+        video_path = os.path.join(os.getcwd(), "data", "raw", "G_NT_5s_wg_E_10_1.mp4")
 
         record = Record(video_path=video_path, label=0)
         assert record is not None
 
     def test_get_flow_individual(self):
-        video_path = os.path.join(
-            os.environ.get("TEST_DIR"), "dataset", "rose", "G_NT_5s_wg_E_10_1.mp4"
-        )
+        video_path = os.path.join(os.getcwd(), "data", "raw", "G_NT_5s_wg_E_10_1.mp4")
         record = Record(video_path=video_path, label=0)
         flow = record.get_flow()
         assert flow is not None
 
     def test_landmarks_individual(self):
-        video_path = os.path.join(
-            os.environ.get("TEST_DIR"), "dataset", "rose", "G_NT_5s_wg_E_10_1.mp4"
-        )
+        video_path = os.path.join(os.getcwd(), "data", "raw", "G_NT_5s_wg_E_10_1.mp4")
         record = Record(video_path=video_path, label=0)
         landmarks = record.get_landmarks(time=300)
         assert landmarks is not None
 
     def test_load(self):
-        load_dotenv()
-        video_path = os.path.join(
-            os.environ.get("TEST_DIR"), "dataset", "rose", "G_NT_5s_wg_E_10_1.mp4"
-        )
+        video_path = os.path.join(os.getcwd(), "data", "raw", "G_NT_5s_wg_E_10_1.mp4")
         record = Record(video_path=video_path, label=0)
         rep = record.load(time=300)
         assert rep is not None

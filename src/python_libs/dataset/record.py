@@ -36,7 +36,6 @@ class Record:
         """
         self.landmarks = self.get_landmarks(time=time, every_frame=every_frame)
         self.flow = self.get_flow()
-        rep = self.landmarks
         rep = np.concatenate(
             (
                 self.landmarks,
@@ -96,7 +95,7 @@ class Record:
                     obj = hdf5_file[current]
                     info[int(current)] = np.array(obj)
 
-        _, _, _, frame_rate = get_video_info_file(self.video_path)
+        _, _, _, frame_rate = get_video_info_file(f"{self.video_path}.info")
 
         frame_space = 1
 
@@ -124,16 +123,19 @@ class Record:
             path (str): video path
 
         Returns:
-            List[NDArray]: optical flow of shape (N, 52, 52, 3)
+            List[NDArray]: optical flow of shape (N, 52, 52, 2)
         """
         info = {}
-        info[0] = np.zeros((52, 52, 2))
+
         if os.path.isfile(f"{self.video_path}_flow.hdf5"):
+            info[0] = np.zeros((52, 52, 2))
             with h5py.File(f"{self.video_path}_flow.hdf5", "r") as hdf5_file:
                 for current in hdf5_file.keys():
                     obj = hdf5_file[current]
                     info[int(current)] = np.array(obj)
 
-        ret = [info[a] for a in sorted(info)]
-        ret.append(np.zeros((52, 52, 2)))
-        return np.array(ret)
+            ret = [info[a] for a in sorted(info)]
+            ret.append(np.zeros((52, 52, 2)))
+            return np.array(ret)
+
+        return None
