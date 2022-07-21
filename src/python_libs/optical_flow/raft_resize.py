@@ -51,7 +51,8 @@ class RaftModel:
             new_model[new_name] = model[name]
         return new_model
 
-    def visualize_flow(self, img, flo):
+    @staticmethod
+    def visualize_flow(img, flo):
         """Show flow as image
 
         Args:
@@ -69,7 +70,8 @@ class RaftModel:
         img_flo = load_image(img_flo)
         show_img(img_flo)
 
-    def save_flow(self, flo, name, parent_path):
+    @staticmethod
+    def save_flow(flo, name, parent_path):
         """Save flow as image
 
         Args:
@@ -77,7 +79,6 @@ class RaftModel:
             name (str): The name
             parent_path (str): folder
         """
-        flo = flo[0].permute(1, 2, 0).cpu().numpy()
         img = load_image(flow_viz.flow_to_image(flo))
         final_path = os.path.join(parent_path, name)
         img.save(final_path)
