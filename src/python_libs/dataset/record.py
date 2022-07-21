@@ -29,13 +29,15 @@ class Record:
 
         Args:
             time (int, optional): desired time between samples. Defaults to 0.
-            every_frame (int, optional): number of frames between samples. Defaults to 1.
+            every_frame (int, optional): number of frames between samples. Defaults to 30.
 
         Returns:
             NDArray: _description_
         """
-        self.landmarks = self.get_landmarks(time=time, every_frame=every_frame)
-        self.flow = self.get_flow()
+        self.landmarks = self.get_landmarks(time=time, every_frame=every_frame)[
+            :samples
+        ]
+        self.flow = self.get_flow()[:samples]
         rep = np.concatenate(
             (
                 self.landmarks,
