@@ -1,13 +1,15 @@
 {
-    "rose": {
-        "subjects": [
-            "2",
-            "12"
-        ]
-    },
     "replay_mobile": {
         "datasets": [
             "devel"
+        ]
+    },
+    "rose": {
+        "root_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Desarrollo/python_libs/data/external/Rose",
+        "sqlite3_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Desarrollo/python_libs/data/external/Rose/rose.sqlite3",
+        "subjects": [
+            "2",
+            "12"
         ]
     }
 }

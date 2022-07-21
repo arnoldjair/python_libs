@@ -91,15 +91,13 @@ class RoseParser:
             )
 
     @staticmethod
-    def get_db_records_as_frame(ids: List[str]) -> pd.DataFrame:
+    def get_db_records_as_frame(ids: List[str], sqlite3_path: str) -> pd.DataFrame:
         """Returns the info in the DB
 
         Returns:
             pd.DataFrame: pd.Dataframe of RoseRecord
         """
-        with RoseParser.create_connection(
-            os.path.join(os.environ.get("ROSE_DATASET"), "rose.sqlite3")
-        ) as conn:
+        with RoseParser.create_connection(sqlite3_path) as conn:
             ret = pd.read_sql_query(
                 f'select * from rose_record where p in ({",".join(ids)})', conn
             )

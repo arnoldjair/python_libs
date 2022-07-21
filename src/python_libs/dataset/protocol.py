@@ -30,9 +30,12 @@ class Protocol:  # pylint: disable=too-few-public-methods
         with open(json_path, "r") as file:
             json_file = json.load(file)
 
-            rose_path = os.environ.get("ROSE_DATASET")
+            rose_path = json_file["rose"]["root_path"]
             subjects = json_file["rose"]["subjects"]
-            frames = RoseParser.get_db_records_as_frame(subjects)
+            sqlite3_path = json_file["rose"]["sqlite3_path"]
+            frames = RoseParser.get_db_records_as_frame(
+                ids=subjects, sqlite3_path=sqlite3_path
+            )
             records = list(
                 map(
                     lambda record: Record(
