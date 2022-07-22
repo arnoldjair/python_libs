@@ -8,6 +8,7 @@ import h5py
 import numpy as np
 import pandas as pd
 from nptyping import NDArray
+from sklearn.preprocessing import MinMaxScaler
 
 from python_libs.video import get_video_info_file
 
@@ -78,7 +79,9 @@ class Record:
             )
             return face_locs
 
-    def get_landmarks(self, time: int = 0, every_frame: int = 1) -> NDArray:
+    def get_landmarks(
+        self, time: int = 0, every_frame: int = 1, reshape=True, scale=False
+    ) -> NDArray:
         """get landmarks
 
         Args:
@@ -111,10 +114,16 @@ class Record:
 
         for i in range(0, len(info), frame_space):
             ret[i] = info[i]
+            if scale:
+                MinMaxScaler(copy=False).fit_transform(ret[i].T).T
 
         curr_landmarks = np.array(list(ret.values()))
         curr_landmarks = curr_landmarks[:, :2, :]
-        curr_landmarks = curr_landmarks.reshape((len(curr_landmarks), -1), order="F")
+
+        if reshape:
+            curr_landmarks = curr_landmarks.reshape(
+                (len(curr_landmarks), -1), order="F"
+            )
 
         return curr_landmarks
 
