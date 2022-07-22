@@ -20,7 +20,7 @@ class SingleDatasource(Dataset):
         record_0 = self.dataset[index]
         label = record_0.label
 
-        return torch.from_numpy(record_0.load(time=300)).float(), label
+        return torch.from_numpy(record_0.load(time=300, scale=True)).float(), label
 
     def __len__(self):
         return len(self.dataset)

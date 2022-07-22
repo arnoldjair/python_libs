@@ -25,7 +25,9 @@ class Record:
     def __repr__(self):
         return f"{self.video_path}-{self.label}"
 
-    def load(self, time: int = 0, every_frame: int = 1, samples=30) -> NDArray:
+    def load(
+        self, time: int = 0, every_frame: int = 1, samples=30, scale=True
+    ) -> NDArray:
         """Load
 
         Args:
@@ -35,9 +37,9 @@ class Record:
         Returns:
             NDArray: _description_
         """
-        self.landmarks = self.get_landmarks(time=time, every_frame=every_frame)[
-            :samples
-        ]
+        self.landmarks = self.get_landmarks(
+            time=time, every_frame=every_frame, scale=scale
+        )[:samples]
         self.flow = self.get_flow()[:samples]
         rep = np.concatenate(
             (
