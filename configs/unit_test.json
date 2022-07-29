@@ -2,7 +2,9 @@
     "replay_mobile": {
         "datasets": [
             "devel"
-        ]
+        ],
+        "root_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Desarrollo/python_libs/data/external/replay-mobile",
+        "sqlite3_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replay-mobile/replay_mobile.sqlite3"
     },
     "rose": {
         "root_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Desarrollo/python_libs/data/external/Rose",

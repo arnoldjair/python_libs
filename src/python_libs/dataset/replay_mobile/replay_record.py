@@ -38,4 +38,4 @@ class ReplayRecord:
         self.landmarks = landmarks
 
     def __repr__(self):
-        return f"[{self.path}"
+        return f"[{self.path}-{self.genuine}"

@@ -2,7 +2,6 @@
 """
 
 
-import os
 import sqlite3
 from sqlite3.dbapi2 import Connection, Error
 from typing import List
@@ -104,15 +103,13 @@ class ReplayParser:
         return conn
 
     @staticmethod
-    def insert_db(records: List[ReplayRecord]):
+    def insert_db(records: List[ReplayRecord], path: str):
         """Inserts records in db
 
         Args:
             records (List[ReplayRecord]): Replay records
         """
-        conn = ReplayParser.create_connection(
-            os.path.join(os.environ.get("REPLAY_DATASET"), "replay_mobile.sqlite3")
-        )
+        conn = ReplayParser.create_connection(path)
         with conn:
             cur = conn.cursor()
             cur.execute("DELETE FROM replay_record")
@@ -139,15 +136,13 @@ class ReplayParser:
             )
 
     @staticmethod
-    def get_db_records_as_frame(datasets: List[str]) -> pd.DataFrame:
+    def get_db_records_as_frame(datasets: List[str], sqlite3_path: str) -> pd.DataFrame:
         """Returns the info in the DB
 
         Returns:
             pd.DataFrame: pd.Dataframe of ReplayRecord
         """
-        with ReplayParser.create_connection(
-            os.path.join(os.environ.get("REPLAY_DATASET"), "replay_mobile.sqlite3")
-        ) as conn:
+        with ReplayParser.create_connection(sqlite3_path) as conn:
             datasets_str = ", ".join(f'"{w}"' for w in datasets)
             sql = f"select * from replay_record where dataset in ({datasets_str})"
             ret = pd.read_sql_query(sql, conn)

@@ -8,6 +8,7 @@ from typing import List
 from sklearn.model_selection import train_test_split
 
 from .record import Record
+from .replay_mobile.replay_parser import ReplayParser
 from .rose.rose_parser import RoseParser
 
 
@@ -27,6 +28,16 @@ class Protocol:  # pylint: disable=too-few-public-methods
         Returns:
             List[Record]: List of Records
         """
+
+        records = []
+        records.extend(Protocol.load_rose(json_path))
+        print("Rose loaded...")
+        records.extend(Protocol.load_replay_mobile(json_path))
+        print("Replay loaded...")
+        return train_test_split(records, test_size=0.3)
+
+    @staticmethod
+    def load_rose(json_path: str):
         with open(json_path, "r") as file:
             json_file = json.load(file)
 
@@ -45,4 +56,25 @@ class Protocol:  # pylint: disable=too-few-public-methods
                 )
             )
 
-        return train_test_split(records, test_size=0.3)
+        return records
+
+    @staticmethod
+    def load_replay_mobile(json_path: str):
+        with open(json_path, "r") as file:
+            json_file = json.load(file)
+            replay_mobile_path = json_file["replay_mobile"]["root_path"]
+            datasets = json_file["replay_mobile"]["datasets"]
+            sqlite3_path = json_file["replay_mobile"]["sqlite3_path"]
+            frames = ReplayParser.get_db_records_as_frame(
+                datasets=datasets, sqlite3_path=sqlite3_path
+            )
+            records = list(
+                map(
+                    lambda record: Record(
+                        os.path.join(replay_mobile_path, record[0]), record[1]
+                    ),
+                    frames.to_numpy(),
+                )
+            )
+
+        return records

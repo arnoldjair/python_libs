@@ -1,6 +1,7 @@
 """RAFT model
 """
 import argparse
+import logging
 import os
 from collections import OrderedDict
 
@@ -33,6 +34,7 @@ class RaftModel:
             self.device = "cpu"
             self.pretrained_weights = self.get_cpu_model(self.pretrained_weights)
             self.model.load_state_dict(self.pretrained_weights)
+        logging.basicConfig(format="%(asctime)s %(message)s")
 
     def get_cpu_model(self, model):
         """Get cpu model
@@ -177,7 +179,7 @@ class RaftModel:
         """Process the dataset"""
 
         self.model.eval()
-
+        logging.info("Opening list file: %s with root path: %s", list_file, root_path)
         with open(list_file, "r") as file:
             video_list = file.read().splitlines()
             for video_name in video_list:
