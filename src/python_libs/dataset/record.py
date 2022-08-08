@@ -1,4 +1,5 @@
 """Record"""
+import logging
 import math
 import os
 from collections import OrderedDict
@@ -25,8 +26,15 @@ class Record:
     def __repr__(self):
         return f"{self.video_path}-{self.label}"
 
+    # TODO: Remove every_frame
     def load(
-        self, time: int = 0, every_frame: int = 1, samples=30, scale=True
+        self,
+        time: int = 0,
+        every_frame: int = 1,
+        samples=30,
+        scale=True,
+        width=416,
+        height=416,
     ) -> NDArray:
         """Load
 
@@ -40,7 +48,7 @@ class Record:
         self.landmarks = self.get_landmarks(
             time=time, every_frame=every_frame, scale=scale
         )[:samples]
-        self.flow = self.get_flow()[:samples]
+        self.flow = self.get_flow(time=time, width=width, height=height)[:samples]
         rep = np.concatenate(
             (
                 self.landmarks,
@@ -129,7 +137,7 @@ class Record:
 
         return curr_landmarks
 
-    def get_flow(self) -> List[NDArray]:
+    def get_flow(self, time=300, width=416, height=416) -> List[NDArray]:
         """Get flow individual
 
         Args:
@@ -139,10 +147,11 @@ class Record:
             List[NDArray]: optical flow of shape (N, 52, 52, 2)
         """
         info = {}
-
-        if os.path.isfile(f"{self.video_path}_flow.hdf5"):
+        filename = f"{self.video_path}_flow_{time}_{width}_{height}.hdf5"
+        logging.info("Loading flow with name %s", filename)
+        if os.path.isfile(filename):
             info[0] = np.zeros((52, 52, 2))
-            with h5py.File(f"{self.video_path}_flow.hdf5", "r") as hdf5_file:
+            with h5py.File(filename, "r") as hdf5_file:
                 for current in hdf5_file.keys():
                     obj = hdf5_file[current]
                     info[int(current)] = np.array(obj)

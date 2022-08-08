@@ -31,3 +31,9 @@ class TestRecord:
         rep = record.load(time=300, samples=100)
         assert rep is not None
         assert rep.shape == (100, 5544)
+
+        time = 300
+        width = 416
+        height = 416
+
+        rep = record.load(time=time, samples=30, width=width, height=height)

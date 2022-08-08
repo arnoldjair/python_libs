@@ -1,16 +1,17 @@
 import os
 
-from dotenv import load_dotenv
-
 from python_libs.dataset import Protocol, SingleDatasource
 
 
 class TestDatasource:
     def test_get_test_datasource(self):
-        load_dotenv(os.path.join(os.getcwd(), ".env"))
+        time = 100
+        width = 416
+        height = 416
+
         json_path = os.path.join(os.getcwd(), "configs", "unit_test.json")
         train, test = Protocol.get_protocol(json_path)
-        dev_datasource = SingleDatasource(train)
+        dev_datasource = SingleDatasource(train, time=time, width=width, height=height)
         test_datasource = SingleDatasource(test)
 
         item_dev = dev_datasource.__getitem__(0)
