@@ -18,6 +18,7 @@ class Record:
     """Record"""
 
     def __init__(self, video_path: str, label: int):
+        self.filename = video_path.split("/")[-1]
         self.video_path = video_path
         self.label = label
         self.landmarks = None
@@ -148,7 +149,7 @@ class Record:
         """
         info = {}
         filename = f"{self.video_path}_flow_{time}_{width}_{height}.hdf5"
-        logging.info("Loading flow with name %s", filename)
+        logging.info("Loading flow with name %s", self.filename)
         if os.path.isfile(filename):
             info[0] = np.zeros((52, 52, 2))
             with h5py.File(filename, "r") as hdf5_file:
