@@ -1,8 +1,5 @@
 """Rose parser
 """
-
-
-import os
 import sqlite3
 from sqlite3.dbapi2 import Connection, Error
 from typing import List
@@ -60,15 +57,13 @@ class RoseParser:
         return conn
 
     @staticmethod
-    def insert_db(records: List[RoseRecord]):
+    def insert_db(records: List[RoseRecord], path: str):
         """Inserts records in db
 
         Args:
             records (List[RoseRecord]): Rose records
         """
-        conn = RoseParser.create_connection(
-            os.path.join(os.environ.get("ROSE_DATASET"), "rose.sqlite3")
-        )
+        conn = RoseParser.create_connection(path)
         with conn:
             cur = conn.cursor()
             cur.execute("DELETE FROM rose_record")
