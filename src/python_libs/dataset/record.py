@@ -23,6 +23,7 @@ class Record:
         self.label = label
         self.landmarks = None
         self.flow = None
+        self.logger = logging.getLogger("antispoofing.record")
 
     def __repr__(self):
         return f"{self.video_path}-{self.label}"
@@ -46,6 +47,9 @@ class Record:
         Returns:
             NDArray: _description_
         """
+
+        self.logger.info("Loading record %s", self.filename)
+
         self.landmarks = self.get_landmarks(
             time=time, every_frame=every_frame, scale=scale
         )[:samples]
@@ -105,6 +109,7 @@ class Record:
         """
         info = {}
         ret = OrderedDict()
+
         if os.path.isfile(f"{self.video_path}.hdf5"):
             with h5py.File(f"{self.video_path}.hdf5", "r") as hdf5_file:
                 for current in hdf5_file.keys():
@@ -149,7 +154,7 @@ class Record:
         """
         info = {}
         filename = f"{self.video_path}_flow_{time}_{width}_{height}.hdf5"
-        logging.info("Loading flow with name %s", self.filename)
+
         if os.path.isfile(filename):
             info[0] = np.zeros((52, 52, 2))
             with h5py.File(filename, "r") as hdf5_file:
