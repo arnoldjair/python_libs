@@ -10,7 +10,7 @@ import numbers
 import numpy as np
 from scipy.ndimage.interpolation import zoom
 
-## pts = 3 * N numpy array; points location is based on the image with size (height*downsample, width*downsample)
+# pts = 3 * N numpy array; points location is based on the image with size (height*downsample, width*downsample)
 
 
 def generate_label_map(pts, height, width, sigma, downsample, nopoints, ctype):

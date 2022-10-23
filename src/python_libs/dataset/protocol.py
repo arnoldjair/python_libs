@@ -2,9 +2,11 @@
 """
 
 import json
+import logging
 import os
 from typing import List
 
+import numpy as np
 from sklearn.model_selection import train_test_split
 
 from .record import Record
@@ -28,13 +30,59 @@ class Protocol:  # pylint: disable=too-few-public-methods
         Returns:
             List[Record]: List of Records
         """
-
+        logger = logging.getLogger("antispoofing.protocol")
         records = []
         records.extend(Protocol.load_rose(json_path))
-        print("Rose loaded...")
+        logger.info("Rose loaded...")
         records.extend(Protocol.load_replay_mobile(json_path))
-        print("Replay loaded...")
+        logger.info("Replay loaded...")
         return train_test_split(records, test_size=0.3)
+
+    @staticmethod
+    def get_pairs_protocol(json_path: str):
+        """Get pairs protocol defined in json file
+
+        Args:
+             path (str): Json file path
+
+        Returns:
+            List[Record, Record, int]: List of pairs of records with label (1 is equals, 0 if not)
+        """
+
+        logger = logging.getLogger("antispoofing.pairs_protocol")
+        records = []
+        pairs_train = []
+        pairs_test = []
+        records.extend(Protocol.load_rose(json_path))
+        logger.info("Rose loaded...")
+        records.extend(Protocol.load_replay_mobile(json_path))
+        logger.info("Replay loaded...")
+
+        train, test = train_test_split(records, test_size=0.3)
+
+        fraud_train = [curr for curr in train if curr.label == 1]
+        genuine_train = [curr for curr in train if curr.label == 0]
+
+        fraud_test = [curr for curr in test if curr.label == 1]
+        genuine_test = [curr for curr in test if curr.label == 0]
+
+        for record in train:
+            pairs_train.append(
+                [record, np.random.choice(genuine_train), 1 if record.label == 0 else 0]
+            )
+            pairs_train.append(
+                [record, np.random.choice(fraud_train), 1 if record.label == 1 else 0]
+            )
+
+        for record in test:
+            pairs_test.append(
+                [record, np.random.choice(genuine_test), 1 if record.label == 0 else 0]
+            )
+            pairs_test.append(
+                [record, np.random.choice(fraud_test), 1 if record.label == 1 else 0]
+            )
+
+        return [pairs_train, pairs_test]
 
     @staticmethod
     def load_rose(json_path: str):

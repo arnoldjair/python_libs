@@ -137,7 +137,7 @@ class ToTensor(object):
         Returns:
           Tensor: Converted image.
         """
-        ## add to support list
+        # add to support list
         if isinstance(pics, list):
             is_list = True
         else:
@@ -245,7 +245,7 @@ class PreCrop(object):
         )
 
     def __call__(self, imgs, point_meta):
-        ## AugCrop has something wrong... For unsupervised data
+        # AugCrop has something wrong... For unsupervised data
 
         if isinstance(imgs, list):
             is_list = True
@@ -352,7 +352,7 @@ class AugCrop(object):
         self.fill = fill
 
     def __call__(self, imgs, point_meta=None):
-        ## AugCrop has something wrong... For unsupervised data
+        # AugCrop has something wrong... For unsupervised data
 
         point_meta = point_meta.copy()
         if isinstance(imgs, list):

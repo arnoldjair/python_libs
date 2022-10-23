@@ -11,7 +11,7 @@ from python_libs.landmarks.sbr.lib.log_utils import print_log
 
 
 def evaluate_normalized_mean_error(predictions, groundtruth, log, extra_faces):
-    ## compute total average normlized mean error
+    # compute total average normlized mean error
     assert len(predictions) == len(
         groundtruth
     ), "The lengths of predictions and ground-truth are not consistent : {} vs {}".format(
