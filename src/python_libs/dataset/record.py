@@ -48,7 +48,7 @@ class Record:
             NDArray: _description_
         """
 
-        self.logger.info("Loading record %s", self.filename)
+        # self.logger.info("Loading record %s", self.filename)
 
         self.landmarks = self.get_landmarks(
             time=time, every_frame=every_frame, scale=scale
