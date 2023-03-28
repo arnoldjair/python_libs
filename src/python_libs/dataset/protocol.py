@@ -32,10 +32,18 @@ class Protocol:  # pylint: disable=too-few-public-methods
         """
         logger = logging.getLogger("antispoofing.protocol")
         records = []
-        records.extend(Protocol.load_rose(json_path))
-        logger.info("Rose loaded...")
-        records.extend(Protocol.load_replay_mobile(json_path))
-        logger.info("Replay loaded...")
+
+        with open(json_path, "r") as file:
+            json_file = json.load(file)
+
+            if "rose" in json_file:
+                records.extend(Protocol.load_rose(json_path))
+                logger.info("Rose loaded...")
+
+            if "replay_mobile" in json_file:
+                records.extend(Protocol.load_replay_mobile(json_path))
+                logger.info("Replay loaded...")
+
         return train_test_split(records, test_size=0.3)
 
     @staticmethod
@@ -53,10 +61,17 @@ class Protocol:  # pylint: disable=too-few-public-methods
         records = []
         pairs_train = []
         pairs_test = []
-        records.extend(Protocol.load_rose(json_path))
-        logger.info("Rose loaded...")
-        records.extend(Protocol.load_replay_mobile(json_path))
-        logger.info("Replay loaded...")
+
+        with open(json_path, "r") as file:
+            json_file = json.load(file)
+
+            if "rose" in json_file:
+                records.extend(Protocol.load_rose(json_path))
+                logger.info("Rose loaded...")
+
+            if "replay_mobile" in json_file:
+                records.extend(Protocol.load_replay_mobile(json_path))
+                logger.info("Replay loaded...")
 
         train, test = train_test_split(records, test_size=0.3)
 
