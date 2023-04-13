@@ -2,7 +2,6 @@
 """
 
 
-import os
 import sqlite3
 from sqlite3.dbapi2 import Connection, Error
 from typing import List
@@ -11,7 +10,7 @@ import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
-from .replay_attack_record import ReplayRecord
+from .replay_attack_record import ReplayAttackRecord
 
 
 class ReplayAttackParser:
@@ -21,14 +20,14 @@ class ReplayAttackParser:
         load_dotenv()
 
     @staticmethod
-    def parse_list_file(path) -> List[ReplayRecord]:
+    def parse_list_file(path) -> List[ReplayAttackRecord]:
         """Parse list
 
         Args:
             path (str): The list path
 
         Returns:
-            List[ReplayRecord]: records
+            List[ReplayAttackRecord]: records
         """
         with open(path, "r") as f:
             lines = f.readlines()
@@ -37,53 +36,14 @@ class ReplayAttackParser:
 
         for line in lines:
             line = line.rstrip()
-            fields = line.split("/")[-1].split(".")[0].split("_")
             dataset = line.split("/")[1]
-            if len(fields) == 8:
-                (
-                    genuine,
-                    client,
-                    session,
-                    attack,
-                    support,
-                    device,
-                    presentation,
-                    light,
-                ) = fields
-                record = ReplayRecord(
-                    line,
-                    line.split("/")[-1],
-                    dataset,
-                    genuine,
-                    client,
-                    session,
-                    attack,
-                    support,
-                    device,
-                    presentation,
-                    light,
-                    None,
-                    None,
-                    None,
-                )
-            else:
-                client, session, step, device, light_condition = fields
-                record = ReplayRecord(
-                    line,
-                    line.split("/")[-1],
-                    dataset,
-                    "real",
-                    client,
-                    session,
-                    None,
-                    None,
-                    device,
-                    None,
-                    None,
-                    step,
-                    light_condition,
-                    None,
-                )
+            genuine = "real"
+
+            if "attack" in line:
+                genuine = "attack"
+
+            record = ReplayAttackRecord(line, line.split("/")[-1], dataset, genuine)
+
             ret.append(record)
 
         return ret
@@ -104,56 +64,36 @@ class ReplayAttackParser:
         return conn
 
     @staticmethod
-    def insert_db(records: List[ReplayRecord]):
+    def insert_db(records: List[ReplayAttackRecord], path: str):
         """Inserts records in db
 
         Args:
-            records (List[ReplayRecord]): Replay records
+            records (List[ReplayAttackRecord]): Replay attack records
         """
-        conn = ReplayAttackParser.create_connection(
-            os.path.join(os.environ.get("REPLAY_DATASET"), "replay_mobile.sqlite3")
-        )
+        conn = ReplayAttackParser.create_connection(path)
         with conn:
             cur = conn.cursor()
-            cur.execute("DELETE FROM replay_record")
+            cur.execute("DELETE FROM replay_attack_record")
             cur.executemany(
-                "INSERT INTO replay_record(path, filename, dataset, genuine, client, session, attack, support, device, presentation, light, step, light_condition) \
-                    values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (
-                    (
-                        obj.path,
-                        obj.filename,
-                        obj.dataset,
-                        obj.genuine,
-                        obj.client,
-                        obj.session,
-                        obj.attack,
-                        obj.support,
-                        obj.device,
-                        obj.presentation,
-                        obj.light,
-                        obj.step,
-                        obj.light_condition,
-                    )
-                    for obj in records
-                ),
+                "INSERT INTO replay_attack_record(path, filename, dataset, genuine) \
+                    values (?, ?, ?, ?)",
+                ((obj.path, obj.filename, obj.dataset, obj.genuine) for obj in records),
             )
 
     @staticmethod
-    def get_db_records_as_frame(datasets: List[str]) -> pd.DataFrame:
+    def get_db_records_as_frame(datasets: List[str], sqlite3_path: str) -> pd.DataFrame:
         """Returns the info in the DB
 
         Returns:
-            pd.DataFrame: pd.Dataframe of ReplayRecord
+            pd.DataFrame: pd.Dataframe of ReplayAttackRecord
         """
-        with ReplayAttackParser.create_connection(
-            os.path.join(os.environ.get("REPLAY_DATASET"), "replay_mobile.sqlite3")
-        ) as conn:
+        with ReplayAttackParser.create_connection(sqlite3_path) as conn:
             datasets_str = ", ".join(f'"{w}"' for w in datasets)
-            sql = f"select * from replay_record where dataset in ({datasets_str})"
+            sql = (
+                f"select * from replay_attack_record where dataset in ({datasets_str})"
+            )
             ret = pd.read_sql_query(sql, conn)
 
-        ret = ret.sort_values(by=["client"], ascending=True)
         ret["label"] = np.where(ret["genuine"] == "real", 0, 1)
 
         return ret[["path", "label"]]
