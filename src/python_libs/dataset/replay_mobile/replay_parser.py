@@ -150,4 +150,4 @@ class ReplayParser:
         ret = ret.sort_values(by=["client"], ascending=True)
         ret["label"] = np.where(ret["genuine"] == "real", 0, 1)
 
-        return ret[["path", "label"]]
+        return ret[["path", "label", "client"]]

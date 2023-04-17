@@ -101,4 +101,4 @@ class RoseParser:
         ret = ret.sort_values(by=["n"], ascending=True)
         ret["label"] = np.where(ret["l"] == "G", 0, 1)
 
-        return ret[["path", "label"]]
+        return ret[["path", "label", "p"]]

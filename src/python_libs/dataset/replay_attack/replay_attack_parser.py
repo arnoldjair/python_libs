@@ -36,13 +36,17 @@ class ReplayAttackParser:
 
         for line in lines:
             line = line.rstrip()
-            dataset = line.split("/")[1]
+            split = line.split("/")
+            dataset = split[1]
+            name = split[-1]
+            client = [s for s in name.split("_") if "client" in s]
+            client = client[0] if len(client) >= 1 else ""
             genuine = "real"
 
             if "attack" in line:
                 genuine = "attack"
 
-            record = ReplayAttackRecord(line, line.split("/")[-1], dataset, genuine)
+            record = ReplayAttackRecord(line, name, dataset, genuine, client)
 
             ret.append(record)
 
@@ -75,9 +79,12 @@ class ReplayAttackParser:
             cur = conn.cursor()
             cur.execute("DELETE FROM replay_attack_record")
             cur.executemany(
-                "INSERT INTO replay_attack_record(path, filename, dataset, genuine) \
-                    values (?, ?, ?, ?)",
-                ((obj.path, obj.filename, obj.dataset, obj.genuine) for obj in records),
+                "INSERT INTO replay_attack_record(path, filename, dataset, genuine, client) \
+                    values (?, ?, ?, ?, ?)",
+                (
+                    (obj.path, obj.filename, obj.dataset, obj.genuine, obj.client)
+                    for obj in records
+                ),
             )
 
     @staticmethod
@@ -96,4 +103,4 @@ class ReplayAttackParser:
 
         ret["label"] = np.where(ret["genuine"] == "real", 0, 1)
 
-        return ret[["path", "label"]]
+        return ret[["path", "label", "client"]]
