@@ -4,12 +4,14 @@
 import json
 import logging
 import os
+import random
 from typing import List
 
 import numpy as np
 from sklearn.model_selection import train_test_split
 
 from .record import Record
+from .replay_attack.replay_attack_parser import ReplayAttackParser
 from .replay_mobile.replay_parser import ReplayParser
 from .rose.rose_parser import RoseParser
 
@@ -59,45 +61,91 @@ class Protocol:  # pylint: disable=too-few-public-methods
 
         logger = logging.getLogger("antispoofing.pairs_protocol")
         records = []
+        records_rose = []
+        records_replay_attack = []
+        records_replay_mobile = []
         pairs_train = []
-        pairs_test = []
 
         with open(json_path, "r") as file:
             json_file = json.load(file)
 
             if "rose" in json_file:
-                records.extend(Protocol.load_rose(json_path))
+                # records.extend(Protocol.load_rose(json_path))
+                records_rose = Protocol.load_rose(json_path)
+                records.extend(records_rose)
                 logger.info("Rose loaded...")
 
             if "replay_mobile" in json_file:
-                records.extend(Protocol.load_replay_mobile(json_path))
-                logger.info("Replay loaded...")
+                records_replay_mobile = Protocol.load_replay_mobile(json_path)
+                records.extend(records_replay_mobile)
+                logger.info("Replay mobile loaded...")
 
-        train, test = train_test_split(records, test_size=0.3)
+            if "replay_attack" in json_file:
+                records_replay_attack = Protocol.load_replay_attack(json_path)
+                records.extend(records_replay_attack)
+                logger.info("Replay attack loaded...")
 
-        fraud_train = [curr for curr in train if curr.label == 1]
-        genuine_train = [curr for curr in train if curr.label == 0]
+        random.shuffle(records)
 
-        fraud_test = [curr for curr in test if curr.label == 1]
-        genuine_test = [curr for curr in test if curr.label == 0]
+        fraud_train = [curr for curr in records if curr.label == 1]
+        genuine_train = [curr for curr in records if curr.label == 0]
 
-        for record in train:
-            pairs_train.append(
-                [record, np.random.choice(genuine_train), 1 if record.label == 0 else 0]
-            )
-            pairs_train.append(
-                [record, np.random.choice(fraud_train), 1 if record.label == 1 else 0]
-            )
+        for index, record in enumerate(records):
+            if index % 2 == 0:
+                # list comprehension where user and dataset
+                genuine_user_records = [
+                    curr
+                    for curr in records
+                    if curr.dataset == record.dataset
+                    and curr.client == record.client
+                    and curr.label == 0
+                ]
+                fraud_user_records = [
+                    curr
+                    for curr in records
+                    if curr.dataset == record.dataset
+                    and curr.client == record.client
+                    and curr.label == 1
+                ]
+                pairs_train.append(
+                    [
+                        record,
+                        np.random.choice(genuine_user_records),
+                        1 if record.label == 0 else 0,
+                    ]
+                )
+                pairs_train.append(
+                    [
+                        record,
+                        np.random.choice(fraud_user_records),
+                        1 if record.label == 1 else 0,
+                    ]
+                )
+            else:
+                pairs_train.append(
+                    [
+                        record,
+                        np.random.choice(genuine_train),
+                        1 if record.label == 0 else 0,
+                    ]
+                )
+                pairs_train.append(
+                    [
+                        record,
+                        np.random.choice(fraud_train),
+                        1 if record.label == 1 else 0,
+                    ]
+                )
 
-        for record in test:
-            pairs_test.append(
-                [record, np.random.choice(genuine_test), 1 if record.label == 0 else 0]
-            )
-            pairs_test.append(
-                [record, np.random.choice(fraud_test), 1 if record.label == 1 else 0]
-            )
+        fraud_train = [curr for curr in records if curr.label == 1]
+        genuine_train = [curr for curr in records if curr.label == 0]
 
-        return [pairs_train, pairs_test]
+        return [pairs_train, []]
+
+    @staticmethod
+    def get_client_from_dataset(client: str, dataset: str, genuine=False):
+
+        pass
 
     @staticmethod
     def load_rose(json_path: str):
@@ -113,7 +161,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
             records = list(
                 map(
                     lambda record: Record(
-                        os.path.join(rose_path, record[0]), record[1]
+                        os.path.join(rose_path, record[0]), record[1], "rose", record[2]
                     ),
                     frames.to_numpy(),
                 )
@@ -134,7 +182,34 @@ class Protocol:  # pylint: disable=too-few-public-methods
             records = list(
                 map(
                     lambda record: Record(
-                        os.path.join(replay_mobile_path, record[0]), record[1]
+                        os.path.join(replay_mobile_path, record[0]),
+                        record[1],
+                        "replay_mobile",
+                        record[2],
+                    ),
+                    frames.to_numpy(),
+                )
+            )
+
+        return records
+
+    @staticmethod
+    def load_replay_attack(json_path: str):
+        with open(json_path, "r") as file:
+            json_file = json.load(file)
+            replay_attack_path = json_file["replay_attack"]["root_path"]
+            datasets = json_file["replay_attack"]["datasets"]
+            sqlite3_path = json_file["replay_attack"]["sqlite3_path"]
+            frames = ReplayAttackParser.get_db_records_as_frame(
+                datasets=datasets, sqlite3_path=sqlite3_path
+            )
+            records = list(
+                map(
+                    lambda record: Record(
+                        os.path.join(replay_attack_path, record[0]),
+                        record[1],
+                        "replay_attack",
+                        record[2],
                     ),
                     frames.to_numpy(),
                 )

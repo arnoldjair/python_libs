@@ -17,12 +17,14 @@ from python_libs.video import get_video_info_file
 class Record:
     """Record"""
 
-    def __init__(self, video_path: str, label: int):
+    def __init__(self, video_path: str, label: int, dataset: str, client: str):
         self.filename = video_path.split("/")[-1]
         self.video_path = video_path
         self.label = label
         self.landmarks = None
         self.flow = None
+        self.dataset = dataset
+        self.client = client
         self.logger = logging.getLogger("antispoofing.record")
 
     def __repr__(self):
@@ -53,11 +55,26 @@ class Record:
         self.landmarks = self.get_landmarks(
             time=time, every_frame=every_frame, scale=scale
         )[:samples]
+
+        if np.shape(self.landmarks)[0] < samples:
+            pad_length = samples - np.shape(self.landmarks)[0]
+            self.landmarks = np.pad(
+                self.landmarks, ((0, pad_length), (0, 0)), "constant", constant_values=0
+            )
+
         self.flow = self.get_flow(time=time, width=width, height=height)[:samples]
+        self.flow = np.array(self.flow).reshape((len(self.flow), -1), order="F")
+
+        if np.shape(self.flow)[0] < samples:
+            pad_length = samples - np.shape(self.flow)[0]
+            self.flow = np.pad(
+                self.flow, ((0, pad_length), (0, 0)), "constant", constant_values=0
+            )
+
         rep = np.concatenate(
             (
                 self.landmarks,
-                np.array(self.flow).reshape((len(self.flow), -1), order="F"),
+                self.flow,
             ),
             axis=1,
         )
