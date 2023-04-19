@@ -17,12 +17,14 @@ from python_libs.video import get_video_info_file
 class Record:
     """Record"""
 
-    def __init__(self, video_path: str, label: int):
+    def __init__(self, video_path: str, label: int, dataset: str, client: str):
         self.filename = video_path.split("/")[-1]
         self.video_path = video_path
         self.label = label
         self.landmarks = None
         self.flow = None
+        self.dataset = dataset
+        self.client = client
         self.logger = logging.getLogger("antispoofing.record")
 
     def __repr__(self):
