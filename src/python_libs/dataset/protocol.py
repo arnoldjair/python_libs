@@ -49,7 +49,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
         return train_test_split(records, test_size=0.3)
 
     @staticmethod
-    def get_pairs_protocol(json_path: str):
+    def get_pairs_protocol(json_path: str, same_user=True):
         """Get pairs protocol defined in json file
 
         Args:
@@ -91,7 +91,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
         genuine_train = [curr for curr in records if curr.label == 0]
 
         for index, record in enumerate(records):
-            if index % 2 == 0:
+            if index % 2 == 0 and same_user:
                 # list comprehension where user and dataset
                 genuine_user_records = [
                     curr
