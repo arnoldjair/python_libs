@@ -100,6 +100,10 @@ class Protocol:  # pylint: disable=too-few-public-methods
                     and curr.client == record.client
                     and curr.label == 0
                 ]
+
+                if len(genuine_user_records) == 0:
+                    genuine_user_records = genuine_train
+
                 fraud_user_records = [
                     curr
                     for curr in records
@@ -107,6 +111,10 @@ class Protocol:  # pylint: disable=too-few-public-methods
                     and curr.client == record.client
                     and curr.label == 1
                 ]
+
+                if len(fraud_user_records) == 0:
+                    fraud_user_records = fraud_train
+
                 pairs_train.append(
                     [
                         record,
