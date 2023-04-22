@@ -1,0 +1,18 @@
+{
+    "rose": {
+        "root_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/Rose",
+        "sqlite3_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/Rose/rose.sqlite3",
+        "subjects": [
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "10",
+            "21",
+            "22",
+            "23"
+        ]
+    }
+}

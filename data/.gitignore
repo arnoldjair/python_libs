@@ -6,3 +6,6 @@
 !external
 !processed
 !interim
+!*.json
+
+!*/

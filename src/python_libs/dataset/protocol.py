@@ -49,6 +49,129 @@ class Protocol:  # pylint: disable=too-few-public-methods
         return train_test_split(records, test_size=0.3)
 
     @staticmethod
+    def get_validation_records(validation_json_path: str):
+
+        logger = logging.getLogger("antispoofing.get_validation_records")
+
+        records_validation_rose = []
+        records_validation_replay_attack = []
+        records_validation_replay_mobile = []
+
+        with open(validation_json_path, "r") as file:
+            json_file = json.load(file)
+
+            if "rose" in json_file:
+                # records.extend(Protocol.load_rose(json_path))
+                records_validation_rose = Protocol.load_rose(validation_json_path)
+                logger.info("Rose loaded...")
+
+            if "replay_mobile" in json_file:
+                records_validation_replay_mobile = Protocol.load_replay_mobile(
+                    validation_json_path
+                )
+                logger.info("Replay mobile loaded...")
+
+            if "replay_attack" in json_file:
+                records_validation_replay_attack = Protocol.load_replay_attack(
+                    validation_json_path
+                )
+                logger.info("Replay attack loaded...")
+
+        return {
+            "rose": records_validation_rose,
+            "replay_attack": records_validation_replay_attack,
+            "replay_mobile": records_validation_replay_mobile,
+        }
+
+    @staticmethod
+    def get_training_records(training_json_path: str):
+
+        logger = logging.getLogger("antispoofing.get_training_records")
+
+        records_training_rose = []
+        records_training_replay_attack = []
+        records_training_replay_mobile = []
+
+        with open(training_json_path, "r") as file:
+            json_file = json.load(file)
+
+            if "rose" in json_file:
+                # records.extend(Protocol.load_rose(json_path))
+                records_training_rose = Protocol.load_rose(training_json_path)
+                logger.info("Rose loaded...")
+
+            if "replay_mobile" in json_file:
+                records_training_replay_mobile = Protocol.load_replay_mobile(
+                    training_json_path
+                )
+                logger.info("Replay mobile loaded...")
+
+            if "replay_attack" in json_file:
+                records_training_replay_attack = Protocol.load_replay_attack(
+                    training_json_path
+                )
+                logger.info("Replay attack loaded...")
+
+        return {
+            "rose": records_training_rose,
+            "replay_attack": records_training_replay_attack,
+            "replay_mobile": records_training_replay_mobile,
+        }
+
+    @staticmethod
+    def get_validation_protocol(validation_json_path: str, training_json_path: str):
+
+        ret = {"rose": [], "replay_attack": [], "replay_mobile": []}
+
+        validation_records = Protocol.get_validation_records(validation_json_path)
+        training_dataset_records = Protocol.get_training_records(training_json_path)
+
+        training_records = []
+        training_records.extend(training_dataset_records["rose"])
+        training_records.extend(training_dataset_records["replay_mobile"])
+        training_records.extend(training_dataset_records["replay_attack"])
+
+        fraud_train = [curr for curr in training_records if curr.label == 1]
+        genuine_train = [curr for curr in training_records if curr.label == 0]
+
+        ret["rose"] = Protocol.pair_records(
+            validation_records["rose"], genuine_train, fraud_train
+        )
+        ret["replay_attack"] = Protocol.pair_records(
+            validation_records["replay_attack"], genuine_train, fraud_train
+        )
+        ret["replay_mobile"] = Protocol.pair_records(
+            validation_records["replay_mobile"], genuine_train, fraud_train
+        )
+
+        return ret
+
+    @staticmethod
+    def pair_records(records, genuine_records, fraud_records):
+
+        ret = []
+
+        for record in records:
+            if record.label == 0:
+                ret.append(
+                    [
+                        record,
+                        np.random.choice(genuine_records),
+                        1 if record.label == 0 else 0,
+                    ]
+                )
+            else:
+                ret.append(
+                    [
+                        record,
+                        np.random.choice(fraud_records),
+                        1 if record.label == 1 else 0,
+                    ]
+                )
+
+        return ret
+
+    @staticmethod
     def get_pairs_protocol(json_path: str, same_user=True):
         """Get pairs protocol defined in json file
 

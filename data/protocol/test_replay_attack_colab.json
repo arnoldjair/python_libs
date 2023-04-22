@@ -1,0 +1,9 @@
+{
+    "replay_attack": {
+        "datasets": [
+            "test"
+        ],
+        "root_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replayattack/",
+        "sqlite3_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replayattack/replay_attack.sqlite3"
+    }
+}
