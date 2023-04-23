@@ -131,43 +131,32 @@ class Protocol:  # pylint: disable=too-few-public-methods
         training_records.extend(training_dataset_records["replay_mobile"])
         training_records.extend(training_dataset_records["replay_attack"])
 
-        fraud_train = [curr for curr in training_records if curr.label == 1]
-        genuine_train = [curr for curr in training_records if curr.label == 0]
-
         ret["rose"] = Protocol.pair_records(
-            validation_records["rose"], genuine_train, fraud_train
+            validation_records["rose"], training_records
         )
         ret["replay_attack"] = Protocol.pair_records(
-            validation_records["replay_attack"], genuine_train, fraud_train
+            validation_records["replay_attack"], training_records
         )
         ret["replay_mobile"] = Protocol.pair_records(
-            validation_records["replay_mobile"], genuine_train, fraud_train
+            validation_records["replay_mobile"], training_records
         )
 
         return ret
 
     @staticmethod
-    def pair_records(records, genuine_records, fraud_records):
+    def pair_records(records, train_records):
 
         ret = []
 
         for record in records:
-            if record.label == 0:
-                ret.append(
-                    [
-                        record,
-                        np.random.choice(genuine_records),
-                        1 if record.label == 0 else 0,
-                    ]
-                )
-            else:
-                ret.append(
-                    [
-                        record,
-                        np.random.choice(fraud_records),
-                        1 if record.label == 1 else 0,
-                    ]
-                )
+            random_record = np.random.choice(train_records)
+            ret.append(
+                [
+                    record,
+                    random_record,
+                    1 if record.label == random_record.label else 0,
+                ]
+            )
 
         return ret
 
