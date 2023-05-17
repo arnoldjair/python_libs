@@ -30,11 +30,9 @@ class Record:
     def __repr__(self):
         return f"{self.video_path}-{self.label}"
 
-    # TODO: Remove every_frame
     def load(
         self,
         time: int = 0,
-        every_frame: int = 1,
         samples=30,
         scale=True,
         width=416,
@@ -44,7 +42,6 @@ class Record:
 
         Args:
             time (int, optional): desired time between samples. Defaults to 0.
-            every_frame (int, optional): number of frames between samples. Defaults to 30.
 
         Returns:
             NDArray: _description_
@@ -52,9 +49,7 @@ class Record:
 
         # self.logger.info("Loading record %s", self.filename)
 
-        self.landmarks = self.get_landmarks(
-            time=time, every_frame=every_frame, scale=scale
-        )[:samples]
+        self.landmarks = self.get_landmarks(time=time, scale=scale)[:samples]
 
         if np.shape(self.landmarks)[0] < samples:
             pad_length = samples - np.shape(self.landmarks)[0]
@@ -111,15 +106,12 @@ class Record:
             )
             return face_locs
 
-    def get_landmarks(
-        self, time: int = 0, every_frame: int = 1, reshape=True, scale=False
-    ) -> NDArray:
+    def get_landmarks(self, time: int = 0, reshape=True, scale=False) -> NDArray:
         """get landmarks
 
         Args:
             path (str): hdf5 file path
             time (int, optional): desired time between samples. Defaults to 0.
-            every_frame (int, optional): number of frames between samples. Defaults to 1.
 
         Returns:
             Dict[int, NDArray]: landmarks
@@ -138,9 +130,7 @@ class Record:
         frame_space = 1
 
         if time == 0:
-            if every_frame == 1:
-                return info
-            frame_space = every_frame
+            frame_space = 1
         else:
             frames_per_milisec = math.ceil(frame_rate) / 1000
             frame_space = math.ceil(time * frames_per_milisec)
@@ -171,16 +161,22 @@ class Record:
         """
         info = {}
         filename = f"{self.video_path}_flow_{time}_{width}_{height}.hdf5"
+        self.logger.info("Loading %s", filename)
 
         if os.path.isfile(filename):
-            info[0] = np.zeros((52, 52, 2))
-            with h5py.File(filename, "r") as hdf5_file:
-                for current in hdf5_file.keys():
-                    obj = hdf5_file[current]
-                    info[int(current)] = np.array(obj)
+            try:
+                info[0] = np.zeros((52, 52, 2))
+                with h5py.File(filename, "r") as hdf5_file:
+                    for current in hdf5_file.keys():
+                        obj = hdf5_file[current]
+                        info[int(current)] = np.array(obj)
 
-            ret = [info[a] for a in sorted(info)]
-            ret.append(np.zeros((52, 52, 2)))
-            return np.array(ret)
+                ret = [info[a] for a in sorted(info)]
+                ret.append(np.zeros((52, 52, 2)))
+                return np.array(ret)
+            except Exception:
+                self.logger.info("Error loading flow for record %s", filename)
+        else:
+            self.logger.info("%s does not exists", filename)
 
         return None

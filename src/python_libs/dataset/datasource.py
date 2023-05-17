@@ -15,13 +15,16 @@ class Datasource(Dataset):
     def __init__(self, dataset, time=300, width=416, height=416):
         super().__init__()
         self.dataset = dataset
+        self.time = time
+        self.width = width
+        self.height = height
 
     def __getitem__(self, index):
         record_0, record_1, label = self.dataset[index]
 
         return (
-            torch.from_numpy(record_0.load(time=300)).float(),
-            torch.from_numpy(record_1.load(time=300)).float(),
+            torch.from_numpy(record_0.load(time=self.time)).float(),
+            torch.from_numpy(record_1.load(time=self.time)).float(),
             label,
         )
 
