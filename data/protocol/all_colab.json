@@ -1,0 +1,44 @@
+{
+    "replay_mobile": {
+        "datasets": [
+            "train",
+            "test"
+        ],
+        "root_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replay-mobile",
+        "sqlite3_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replay-mobile/replay_mobile.sqlite3"
+    },
+    "rose": {
+        "root_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/Rose",
+        "sqlite3_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/Rose/rose.sqlite3",
+        "subjects": [
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "10",
+            "21",
+            "22",
+            "23"
+        ]
+    },
+    "replay_attack": {
+        "datasets": [
+            "train",
+            "test"
+        ],
+        "root_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replayattack",
+        "sqlite3_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replayattack/replay_attack.sqlite3"
+    }
+}
