@@ -136,9 +136,10 @@ class Record:
             frame_space = math.ceil(time * frames_per_milisec)
 
         for i in range(0, len(info), frame_space):
-            ret[i] = info[i]
-            if scale:
-                MinMaxScaler(copy=False).fit_transform(ret[i].T).T
+            if i in info:
+                ret[i] = info[i]
+                if scale:
+                    MinMaxScaler(copy=False).fit_transform(ret[i].T).T
 
         curr_landmarks = np.array(list(ret.values()))
         curr_landmarks = curr_landmarks[:, :2, :]

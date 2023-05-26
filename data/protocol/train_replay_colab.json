@@ -1,0 +1,16 @@
+{
+    "replay_mobile": {
+        "datasets": [
+            "train"
+        ],
+        "root_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replay-mobile",
+        "sqlite3_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replay-mobile/replay_mobile.sqlite3"
+    },
+    "replay_attack": {
+        "datasets": [
+            "train"
+        ],
+        "root_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replayattack",
+        "sqlite3_path": "/content/drive/MyDrive/Datasets/SpoofingDatasets/replayattack/replay_attack.sqlite3"
+    }
+}
