@@ -8,7 +8,6 @@ import random
 from typing import List
 
 import numpy as np
-from sklearn.model_selection import train_test_split
 
 from .record import Record
 from .replay_attack.replay_attack_parser import ReplayAttackParser
@@ -23,30 +22,47 @@ class Protocol:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def get_protocol(json_path: str) -> List[Record]:
-        """Get protocol defined in json file
+    def get_records(json_path: str) -> List[Record]:
+        """Get records defined in json file
 
         Args:
             path (str): Json file path
 
         Returns:
-            List[Record]: List of Records
+            List[Record], Dict: List of Records and groups
         """
-        logger = logging.getLogger("antispoofing.protocol")
+        logger = logging.getLogger("antispoofing.records")
         records = []
+        groups = {}
 
         with open(json_path, "r") as file:
             json_file = json.load(file)
 
             if "rose" in json_file:
-                records.extend(Protocol.load_rose(json_path))
+                rose_records, rose_groups = Protocol.load_rose(json_path)
+                records.extend(rose_records)
+                groups["rose"] = rose_groups
                 logger.info("Rose loaded...")
 
             if "replay_mobile" in json_file:
-                records.extend(Protocol.load_replay_mobile(json_path))
-                logger.info("Replay loaded...")
+                (
+                    replay_mobile_records,
+                    replay_mobile_groups,
+                ) = Protocol.load_replay_mobile(json_path)
+                records.extend(replay_mobile_records)
+                groups["replay_mobile"] = replay_mobile_groups
+                logger.info("Replay mobile loaded...")
 
-        return train_test_split(records, test_size=0.3)
+            if "replay_attack" in json_file:
+                (
+                    replay_attack_records,
+                    replay_attack_groups,
+                ) = Protocol.load_replay_attack(json_path)
+                records.extend(replay_attack_records)
+                groups["replay_attack"] = replay_attack_groups
+                logger.info("Replay attack loaded...")
+
+        return records, groups
 
     @staticmethod
     def get_validation_records(validation_json_path: str):
@@ -263,12 +279,18 @@ class Protocol:  # pylint: disable=too-few-public-methods
         return [pairs_train, []]
 
     @staticmethod
-    def get_client_from_dataset(client: str, dataset: str, genuine=False):
+    def group_by_client(records: List[Record], client_ids: List[str]):
+        ret = {}
+        for curr_id in client_ids:
+            # We're assuming that all records belong to the same dataset
+            client_records = [curr for curr in records if curr.client == curr_id]
+            ret[curr_id] = client_records
 
-        pass
+        return ret
 
     @staticmethod
-    def load_rose(json_path: str):
+    def load_rose(json_path: str, group_by_client=False):
+        groups = {}
         with open(json_path, "r") as file:
             json_file = json.load(file)
 
@@ -287,10 +309,14 @@ class Protocol:  # pylint: disable=too-few-public-methods
                 )
             )
 
-        return records
+        if group_by_client:
+            groups = Protocol.group_by_client(records, subjects)
+
+        return records, groups
 
     @staticmethod
-    def load_replay_mobile(json_path: str):
+    def load_replay_mobile(json_path: str, group_by_client=False):
+        groups = {}
         with open(json_path, "r") as file:
             json_file = json.load(file)
             replay_mobile_path = json_file["replay_mobile"]["root_path"]
@@ -311,10 +337,14 @@ class Protocol:  # pylint: disable=too-few-public-methods
                 )
             )
 
-        return records
+        if group_by_client:
+            groups = Protocol.group_by_client(records, datasets)
+
+        return records, groups
 
     @staticmethod
-    def load_replay_attack(json_path: str):
+    def load_replay_attack(json_path: str, group_by_client=False):
+        groups = {}
         with open(json_path, "r") as file:
             json_file = json.load(file)
             replay_attack_path = json_file["replay_attack"]["root_path"]
@@ -335,4 +365,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
                 )
             )
 
-        return records
+        if group_by_client:
+            groups = Protocol.group_by_client(records, datasets)
+
+        return records, groups

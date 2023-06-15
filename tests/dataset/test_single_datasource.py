@@ -10,7 +10,7 @@ class TestDatasource:
         height = 416
 
         json_path = os.path.join(os.getcwd(), "configs", "unit_test.json")
-        train, test = Protocol.get_protocol(json_path)
+        train, test = Protocol.get_records(json_path)
         dev_datasource = SingleDatasource(train, time=time, width=width, height=height)
         test_datasource = SingleDatasource(test)
 

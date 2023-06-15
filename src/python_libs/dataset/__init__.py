@@ -10,6 +10,7 @@ from .replay_mobile.replay_record import ReplayRecord
 from .rose.rose_parser import RoseParser
 from .rose.rose_record import RoseRecord
 from .single_datasource import SingleDatasource
+from .triplet_datasource import TripletDatasource
 
 __all__ = [
     Datasource,
@@ -22,4 +23,5 @@ __all__ = [
     RoseParser,
     RoseRecord,
     SingleDatasource,
+    TripletDatasource,
 ]

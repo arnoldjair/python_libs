@@ -9,7 +9,7 @@ class TestDataloader:
     def get_get_dataloader(self):
         load_dotenv(os.path.join(os.getcwd(), ".env"))
         json_path = os.path.join(os.getcwd(), "configs", "unit_test.json")
-        train, test = Protocol.get_protocol(json_path)
+        train, test = Protocol.get_records(json_path)
         dev_datasource = Datasource(train)
         test_datasource = Datasource(test)
 
