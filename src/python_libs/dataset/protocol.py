@@ -82,17 +82,17 @@ class Protocol:  # pylint: disable=too-few-public-methods
 
             if "rose" in json_file:
                 # records.extend(Protocol.load_rose(json_path))
-                records_validation_rose = Protocol.load_rose(validation_json_path)
+                records_validation_rose, _ = Protocol.load_rose(validation_json_path)
                 logger.info("Rose loaded...")
 
             if "replay_mobile" in json_file:
-                records_validation_replay_mobile = Protocol.load_replay_mobile(
+                records_validation_replay_mobile, _ = Protocol.load_replay_mobile(
                     validation_json_path
                 )
                 logger.info("Replay mobile loaded...")
 
             if "replay_attack" in json_file:
-                records_validation_replay_attack = Protocol.load_replay_attack(
+                records_validation_replay_attack, _ = Protocol.load_replay_attack(
                     validation_json_path
                 )
                 logger.info("Replay attack loaded...")
@@ -117,17 +117,17 @@ class Protocol:  # pylint: disable=too-few-public-methods
 
             if "rose" in json_file:
                 # records.extend(Protocol.load_rose(json_path))
-                records_training_rose = Protocol.load_rose(training_json_path)
+                records_training_rose, _ = Protocol.load_rose(training_json_path)
                 logger.info("Rose loaded...")
 
             if "replay_mobile" in json_file:
-                records_training_replay_mobile = Protocol.load_replay_mobile(
+                records_training_replay_mobile, _ = Protocol.load_replay_mobile(
                     training_json_path
                 )
                 logger.info("Replay mobile loaded...")
 
             if "replay_attack" in json_file:
-                records_training_replay_attack = Protocol.load_replay_attack(
+                records_training_replay_attack, _ = Protocol.load_replay_attack(
                     training_json_path
                 )
                 logger.info("Replay attack loaded...")

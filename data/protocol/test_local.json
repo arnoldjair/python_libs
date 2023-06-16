@@ -3,12 +3,12 @@
         "datasets": [
             "test"
         ],
-        "root_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replay-mobile/",
-        "sqlite3_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replay-mobile/replay_mobile.sqlite3"
+        "root_path": "/media/equipo/TOSHIBA EXT/GD/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replay-mobile/",
+        "sqlite3_path": "/media/equipo/TOSHIBA EXT/GD/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replay-mobile/replay_mobile.sqlite3"
     },
     "rose": {
-        "root_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/Rose/",
-        "sqlite3_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/Rose/rose.sqlite3",
+        "root_path": "/media/equipo/TOSHIBA EXT/GD/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/Rose/",
+        "sqlite3_path": "/media/equipo/TOSHIBA EXT/GD/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/Rose/rose.sqlite3",
         "subjects": [
             "13",
             "14",
@@ -26,7 +26,7 @@
         "datasets": [
             "test"
         ],
-        "root_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replayattack/",
-        "sqlite3_path": "/home/equipo/Insync/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replayattack/replay_attack.sqlite3"
+        "root_path": "/media/equipo/TOSHIBA EXT/GD/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replayattack/",
+        "sqlite3_path": "/media/equipo/TOSHIBA EXT/GD/arnoldjair@gmail.com/GoogleDrive/Datasets/SpoofingDatasets/replayattack/replay_attack.sqlite3"
     }
 }
