@@ -34,6 +34,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
         logger = logging.getLogger("antispoofing.records")
         records = []
         groups = {}
+        records_dict = {}
 
         with open(json_path, "r") as file:
             json_file = json.load(file)
@@ -42,6 +43,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
                 rose_records, rose_groups = Protocol.load_rose(json_path)
                 records.extend(rose_records)
                 groups["rose"] = rose_groups
+                records_dict["rose"] = rose_records
                 logger.info("Rose loaded...")
 
             if "replay_mobile" in json_file:
@@ -51,6 +53,7 @@ class Protocol:  # pylint: disable=too-few-public-methods
                 ) = Protocol.load_replay_mobile(json_path)
                 records.extend(replay_mobile_records)
                 groups["replay_mobile"] = replay_mobile_groups
+                records_dict["replay_mobile"] = replay_mobile_records
                 logger.info("Replay mobile loaded...")
 
             if "replay_attack" in json_file:
@@ -60,9 +63,10 @@ class Protocol:  # pylint: disable=too-few-public-methods
                 ) = Protocol.load_replay_attack(json_path)
                 records.extend(replay_attack_records)
                 groups["replay_attack"] = replay_attack_groups
+                records_dict["replay_attack"] = replay_attack_records
                 logger.info("Replay attack loaded...")
 
-        return records, groups
+        return records, groups, records_dict
 
     @staticmethod
     def get_validation_records(validation_json_path: str):
