@@ -11,6 +11,7 @@ from .rose.rose_parser import RoseParser
 from .rose.rose_record import RoseRecord
 from .single_datasource import SingleDatasource
 from .triplet_datasource import TripletDatasource
+from .triplet_eval_datasourcecopy import TripletEvalDatasource
 
 __all__ = [
     Datasource,
@@ -24,4 +25,5 @@ __all__ = [
     RoseRecord,
     SingleDatasource,
     TripletDatasource,
+    TripletEvalDatasource,
 ]
