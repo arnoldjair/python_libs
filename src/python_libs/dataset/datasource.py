@@ -1,6 +1,7 @@
 """
 DataSource
 """
+import numpy as np
 import torch
 from torch.utils.data import Dataset
 
@@ -21,7 +22,14 @@ class Datasource(Dataset):
         self.samples = samples
 
     def __getitem__(self, index):
-        record_0, record_1, label = self.dataset[index]
+        record_0 = self.dataset[index]
+
+        if index % 2 == 0:
+            records = [curr for curr in self.dataset if curr.label == record_0.label]
+        else:
+            records = [curr for curr in self.dataset if curr.label != record_0.label]
+
+        record_1 = np.random.choice(records)
 
         return (
             torch.from_numpy(
@@ -30,7 +38,7 @@ class Datasource(Dataset):
             torch.from_numpy(
                 record_1.load(time=self.time, samples=self.samples)
             ).float(),
-            label,
+            0 if record_0.label == record_1.label else 1,
         )
 
     def __len__(self):
